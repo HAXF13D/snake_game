@@ -4,7 +4,7 @@ from Field import Field
 class Snake(Field):
     snake_pos = {}
     __buf = '0'
-    __last_move = '0'
+    _last_move = '0'
 
     def __init__(self):
         super().__init__()
@@ -70,55 +70,58 @@ class Snake(Field):
 
         self.snake_pos['line'] = x
         self.snake_pos['column'] = y
+        self._generate_food()
 
     def __change_field(self, posx_1, posy_1, posx_2, posy_2, posx_3, posy_3):
         self._game_field[posx_1][posy_1] = self._HEAD_SIM
         self._game_field[posx_2][posy_2] = self._BODY_SIM
-        self._game_field[posx_3][posy_3] = '.'
+        if posx_3 == 0 or posy_3 == 0 or posx_3 == self.lines - 1 or posy_3 == self.columns - 1:
+            self._game_field[posx_3][posy_3] = self._BORDER_SIM
+        else:
+            self._game_field[posx_3][posy_3] = self._EMPTY_SIM
 
     def __check_collusion(self, posx, posy):
         if posx == self._food_line and posy == self._food_column:
             self.__grow()
-            self._generate_food()
         if self._game_field[posx][posy] == '#' or self._game_field[posx][posy] == '+':
-            self.game_status = False
+            self._game_status = False
 
-    def move(self, direction):
+    def _move(self, direction):
 
         x = self.snake_pos['line']
         y = self.snake_pos['column']
         flag = True
         if direction == 'UP':
-            if self.__last_move != 'D' or len(x) == 1:
+            if self._last_move != 'D' or len(x) == 1:
                 self.__buf = 'U'
-                self.__last_move = 'U'
+                self._last_move = 'U'
                 flag = False
                 self.__check_collusion(x[0] - 1, y[0])
                 x.insert(0, x[0] - 1)
                 y.insert(0, y[0])
 
         if direction == 'DOWN':
-            if self.__last_move != 'U' or len(x) == 1:
+            if self._last_move != 'U' or len(x) == 1:
                 self.__buf = 'D'
-                self.__last_move = 'D'
+                self._last_move = 'D'
                 flag = False
                 self.__check_collusion(x[0] + 1, y[0])
                 x.insert(0, x[0] + 1)
                 y.insert(0, y[0])
 
         if direction == 'RIGHT':
-            if self.__last_move != 'L' or len(x) == 1:
+            if self._last_move != 'L' or len(x) == 1:
                 self.__buf = 'R'
-                self.__last_move = 'R'
+                self._last_move = 'R'
                 flag = False
                 self.__check_collusion(x[0], y[0] + 1)
                 x.insert(0, x[0])
                 y.insert(0, y[0] + 1)
 
         if direction == 'LEFT':
-            if self.__last_move != 'R' or len(x) == 1:
+            if self._last_move != 'R' or len(x) == 1:
                 self.__buf = 'L'
-                self.__last_move = 'L'
+                self._last_move = 'L'
                 flag = False
                 self.__check_collusion(x[0], y[0] - 1)
                 x.insert(0, x[0])
