@@ -170,4 +170,4 @@ class Game(Snake):
             """
             self._move(direction)
             pg.display.flip()
-            self._clock.tick(45)
+            self._clock.tick(120)

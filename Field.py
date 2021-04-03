@@ -31,9 +31,18 @@ class Field:
 
             self._game_field.append(temp_string)
 
+    def __check_food(self):
+        result = False
+        for line in range(self.lines):
+            for column in range(self.columns):
+                if self._game_field[line][column] == self._FOOD_SIM:
+                    result = True
+        return result
+
     def _generate_food(self):
-        from random import randint
-        while self._game_field[self._food_line][self._food_column] != self._EMPTY_SIM:
-            self._food_line = randint(1, self.lines - 2)
-            self._food_column = randint(1, self.columns - 2)
-        self._game_field[self._food_line][self._food_column] = self._FOOD_SIM
+        if not self.__check_food():
+            from random import randint
+            while self._game_field[self._food_line][self._food_column] != self._EMPTY_SIM:
+                self._food_line = randint(1, self.lines - 2)
+                self._food_column = randint(1, self.columns - 2)
+            self._game_field[self._food_line][self._food_column] = self._FOOD_SIM

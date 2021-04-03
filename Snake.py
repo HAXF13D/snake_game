@@ -46,32 +46,6 @@ class Snake(Field):
                     else:
                         self.__buf = 'D'
 
-    def __grow(self):
-        self.__set_buf()
-        x = self.snake_pos['line']
-        y = self.snake_pos['column']
-        if self.__buf == 'U':
-            x.append(x[len(x) - 1] + 1)
-            y.append(y[len(y) - 1])
-
-        if self.__buf == 'D':
-            x.append(x[len(x) - 1] - 1)
-            y.append(y[len(y) - 1])
-
-        if self.__buf == 'L':
-            x.append(x[len(x) - 1])
-            y.append(y[len(y) - 1] + 1)
-
-        if self.__buf == 'R':
-            x.append(x[len(x) - 1])
-            y.append(y[len(y) - 1] - 1)
-
-        self._game_field[x[len(x) - 1]][y[len(y) - 1]] = self._BODY_SIM
-
-        self.snake_pos['line'] = x
-        self.snake_pos['column'] = y
-        self._generate_food()
-
     def __change_field(self, posx_1, posy_1, posx_2, posy_2, posx_3, posy_3):
         self._game_field[posx_1][posy_1] = self._HEAD_SIM
         self._game_field[posx_2][posy_2] = self._BODY_SIM
@@ -81,8 +55,6 @@ class Snake(Field):
             self._game_field[posx_3][posy_3] = self._EMPTY_SIM
 
     def __check_collusion(self, posx, posy):
-        if posx == self._food_line and posy == self._food_column:
-            self.__grow()
         if self._game_field[posx][posy] == '#' or self._game_field[posx][posy] == '+':
             self._game_status = False
 
@@ -126,15 +98,14 @@ class Snake(Field):
                 self.__check_collusion(x[0], y[0] - 1)
                 x.insert(0, x[0])
                 y.insert(0, y[0] - 1)
-
         if not flag:
             temp_x = x[len(x) - 1]
             temp_y = y[len(y) - 1]
 
             if not flag:
-
-                x.pop(len(x) - 1)
-                y.pop(len(y) - 1)
+                if self._game_field[x[0]][y[0]] != self._FOOD_SIM:
+                    x.pop(len(x) - 1)
+                    y.pop(len(y) - 1)
 
             self.snake_pos['line'] = x
             self.snake_pos['column'] = y
@@ -143,3 +114,4 @@ class Snake(Field):
                 self.__change_field(x[0], y[0], x[1], y[1], temp_x, temp_y)
             else:
                 self.__change_field(x[0], y[0], temp_x, temp_y, temp_x, temp_y)
+            self._generate_food()
