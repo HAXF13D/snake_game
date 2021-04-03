@@ -85,7 +85,7 @@ class Game(Snake):
             flag = False
         return result, flag
 
-    def spiral(self):
+    def __spiral(self):
         result = ''
         if self.__ai_state == 1:
             if self.snake_pos['line'][0] == self.lines - 3 and self.snake_pos['column'][0] == self.columns - 2:
@@ -136,7 +136,7 @@ class Game(Snake):
     def __ai(self):
         result = ''
         if self.__ai_state == 1:
-            result = self.spiral()
+            result = self.__spiral()
         else:
             result = self.__back()
         return result
